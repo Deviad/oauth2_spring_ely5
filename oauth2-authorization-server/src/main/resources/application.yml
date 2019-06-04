@@ -23,8 +23,8 @@ security:
       client-id: ${CLIENT_ID}
       client-secret: ${CLIENT_SECRET}
       access-token-uri: http://${APP_HOSTNAME}:${SERVER_PORT}/oauth/token
-    resource:
-      user-info-uri: http://${APP_HOSTNAME}:${SERVER_PORT}/api/v1/users/me
+#    resource:
+#      user-info-uri: http://${APP_HOSTNAME}:${SERVER_PORT}/api/v1/users/me
 ---
 spring:
   profiles: development
