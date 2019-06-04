@@ -1,13 +1,17 @@
-package com.example.springdemo.persistence.domain;
+package com.simplicity.authserver.persistence.domain;
 
 
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.LazyToOne;
 import org.hibernate.annotations.LazyToOneOption;
 
 import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "UserInfo")
 @Table(name = "userinfo")
 public class UserInfo {

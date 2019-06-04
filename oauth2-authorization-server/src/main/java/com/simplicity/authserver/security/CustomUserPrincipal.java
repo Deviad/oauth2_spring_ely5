@@ -1,15 +1,13 @@
-package com.example.springdemo.security;
+package com.simplicity.authserver.security;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import com.example.springdemo.persistence.domain.Privilege;
-import com.example.springdemo.persistence.domain.Role;
-import com.example.springdemo.persistence.domain.User;
+import com.simplicity.authserver.persistence.domain.Privilege;
+import com.simplicity.authserver.persistence.domain.Role;
+import com.simplicity.authserver.persistence.domain.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.*;
 
 public class CustomUserPrincipal implements UserDetails {
 
@@ -54,6 +52,19 @@ public class CustomUserPrincipal implements UserDetails {
         }
         return authorities;
     }
+
+
+    public Set<String> getRoles() {
+        Set<String> roleNames = new LinkedHashSet<>();
+
+        final Set<Role> roles = new LinkedHashSet<>(user.getRoles());
+        for (Role role : roles) {
+            roleNames.add(role.getName());
+        }
+        return roleNames;
+    }
+
+
 
 //    private List<GrantedAuthority> getGrantedAuthorities(List<String> privileges) {
 //        List<GrantedAuthority> authorities = new ArrayList<>();

@@ -1,7 +1,7 @@
-package com.example.springdemo.security;
+package com.simplicity.authserver.security;
 
-import com.example.springdemo.persistence.domain.User;
-import com.example.springdemo.persistence.repositories.UserRepository;
+import com.simplicity.authserver.persistence.domain.User;
+import com.simplicity.authserver.persistence.repositories.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

@@ -1,4 +1,4 @@
-package com.simplicity.authserver.security;
+package com.simplicity.resourceserver.security;
 
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;

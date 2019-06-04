@@ -1,15 +1,28 @@
+logging:
+  level:
+    root: DEBUG
+
+security:
+  jwt:
+    key-store: classpath:jwt.jks
+    key-store-password: password
+    key-pair-alias: jwt
+    key-pair-password: password
+
 server:
   port: ${SERVER_PORT}
   servlet:
     #    context-path: /api
     context-path: /
 spring:
+  http:
+    log-request-details: true
   profiles:
     active: ${ACTIVE_PROFILE}
   jpa:
     hibernate:
-  #      ddl-auto: update
-      ddl-auto: ${DDL_AUTO}
+        ddl-auto: none
+#      ddl-auto: ${DDL_AUTO}
     database: mysql
     show-sql: true
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
@@ -17,14 +30,6 @@ spring:
     url: jdbc:${DB_DBMS}://${DB_HOSTNAME}:3306/${DB_NAME}?useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-security:
-  oauth2:
-    client:
-      client-id: ${CLIENT_ID}
-      client-secret: ${CLIENT_SECRET}
-      access-token-uri: http://${APP_HOSTNAME}:${SERVER_PORT}/oauth/token
-    resource:
-      user-info-uri: http://${APP_HOSTNAME}:${SERVER_PORT}/api/v1/users/me
 ---
 spring:
   profiles: development

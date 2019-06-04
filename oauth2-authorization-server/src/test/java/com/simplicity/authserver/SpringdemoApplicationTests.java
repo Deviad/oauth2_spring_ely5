@@ -1,4 +1,4 @@
-package com.example.springdemo;
+package com.simplicity.authserver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.http.ContentType;

@@ -12,4 +12,4 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
-rootProject.name = "springdemo"
+rootProject.name = "authorization-server"

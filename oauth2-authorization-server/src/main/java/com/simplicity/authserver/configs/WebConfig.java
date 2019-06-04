@@ -1,4 +1,4 @@
-package com.example.springdemo.configs;
+package com.simplicity.authserver.configs;
 
 
 import org.springframework.context.annotation.Bean;
@@ -25,6 +25,12 @@ public class WebConfig {
                         .allowedMethods("*")
                         .maxAge(3600)
                         .allowCredentials(true);
+                registry
+                        .addMapping("/oauth/confirm_access")
+                        .allowedOrigins("*")
+                        .allowedMethods("*")
+                        .maxAge(3600);
+
             }
         };
     }

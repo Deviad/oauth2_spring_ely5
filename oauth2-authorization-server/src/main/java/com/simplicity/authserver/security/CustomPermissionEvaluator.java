@@ -1,4 +1,4 @@
-package com.example.springdemo.security;
+package com.simplicity.authserver.security;
 
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;

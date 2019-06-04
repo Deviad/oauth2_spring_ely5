@@ -1,13 +1,13 @@
-package com.example.springdemo.persistence;
+package com.simplicity.authserver.persistence;
 
-import com.example.springdemo.persistence.domain.Privilege;
-import com.example.springdemo.persistence.domain.Role;
-import com.example.springdemo.persistence.domain.User;
-import com.example.springdemo.persistence.domain.UserInfo;
-import com.example.springdemo.persistence.repositories.PrivilegeRepository;
-import com.example.springdemo.persistence.repositories.RoleRepository;
-import com.example.springdemo.persistence.repositories.UserInfoRepository;
-import com.example.springdemo.persistence.repositories.UserRepository;
+import com.simplicity.authserver.persistence.domain.Privilege;
+import com.simplicity.authserver.persistence.domain.Role;
+import com.simplicity.authserver.persistence.domain.User;
+import com.simplicity.authserver.persistence.domain.UserInfo;
+import com.simplicity.authserver.persistence.repositories.PrivilegeRepository;
+import com.simplicity.authserver.persistence.repositories.RoleRepository;
+import com.simplicity.authserver.persistence.repositories.UserInfoRepository;
+import com.simplicity.authserver.persistence.repositories.UserRepository;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -65,10 +65,11 @@ public class SetupData implements InitializingBean {
     private void initUsers() {
         if (userRepository.findUserByUsername("pippo") == null) {
             Role adminRole = roleRepository.findAll().stream().filter(role -> role.getName().equals("ROLE_ADMIN")).findFirst().orElseThrow(EntityNotFoundException::new);
+            Role userRole = roleRepository.findAll().stream().filter(role -> role.getName().equals("ROLE_USER")).findFirst().orElseThrow(EntityNotFoundException::new);
             User user1 = new User();
             user1.setUsername("pippo");
             user1.setPassword(encoder.encode("123"));
-            user1.setRoles(new LinkedHashSet<>(Collections.singleton(adminRole)));
+            user1.setRoles(new LinkedHashSet<>(Arrays.asList(adminRole, userRole)));
             userRepository.save(user1);
             UserInfo userInfo1 = new UserInfo();
             userInfo1.setName("Davide");
@@ -112,8 +113,9 @@ public class SetupData implements InitializingBean {
                 = createPrivilegeIfNotFound("READ_PRIVILEGE");
         Privilege writePrivilege
                 = createPrivilegeIfNotFound("WRITE_PRIVILEGE");
-        Set<Privilege> adminPrivileges = new LinkedHashSet<>(Arrays.asList(readPrivilege, writePrivilege));
-        createRoleIfNotFound("ROLE_ADMIN", adminPrivileges);
+        Set<Privilege> privileges = new LinkedHashSet<>(Arrays.asList(readPrivilege, writePrivilege));
+        createRoleIfNotFound("ROLE_ADMIN", privileges);
+        createRoleIfNotFound("ROLE_USER", Collections.singleton(readPrivilege));
     }
 
     private Privilege createPrivilegeIfNotFound(String name) {

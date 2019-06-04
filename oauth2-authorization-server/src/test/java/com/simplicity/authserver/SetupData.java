@@ -1,13 +1,13 @@
-package com.example.springdemo;
+package com.simplicity.authserver;
 
-import com.example.springdemo.persistence.domain.Privilege;
-import com.example.springdemo.persistence.domain.Role;
-import com.example.springdemo.persistence.domain.User;
-import com.example.springdemo.persistence.domain.UserInfo;
-import com.example.springdemo.persistence.repositories.PrivilegeRepository;
-import com.example.springdemo.persistence.repositories.RoleRepository;
-import com.example.springdemo.persistence.repositories.UserInfoRepository;
-import com.example.springdemo.persistence.repositories.UserRepository;
+import com.simplicity.authserver.persistence.domain.Privilege;
+import com.simplicity.authserver.persistence.domain.Role;
+import com.simplicity.authserver.persistence.domain.User;
+import com.simplicity.authserver.persistence.domain.UserInfo;
+import com.simplicity.authserver.persistence.repositories.PrivilegeRepository;
+import com.simplicity.authserver.persistence.repositories.RoleRepository;
+import com.simplicity.authserver.persistence.repositories.UserInfoRepository;
+import com.simplicity.authserver.persistence.repositories.UserRepository;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;

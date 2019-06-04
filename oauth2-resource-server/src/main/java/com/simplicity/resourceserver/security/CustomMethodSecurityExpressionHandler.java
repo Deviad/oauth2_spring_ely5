@@ -1,4 +1,4 @@
-package com.simplicity.authserver.security;
+package com.simplicity.resourceserver.security;
 
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;

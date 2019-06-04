@@ -1,4 +1,4 @@
-package com.example.springdemo.configs;
+package com.simplicity.authserver.configs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;

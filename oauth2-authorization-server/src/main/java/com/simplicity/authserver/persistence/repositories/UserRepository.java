@@ -1,6 +1,6 @@
-package com.example.springdemo.persistence.repositories;
+package com.simplicity.authserver.persistence.repositories;
 
-import com.example.springdemo.persistence.domain.User;
+import com.simplicity.authserver.persistence.domain.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

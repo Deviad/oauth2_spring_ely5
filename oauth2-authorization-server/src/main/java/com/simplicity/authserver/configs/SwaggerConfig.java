@@ -1,4 +1,4 @@
-package com.example.springdemo.configs;
+package com.simplicity.authserver.configs;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

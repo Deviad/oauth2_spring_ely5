@@ -1,7 +1,7 @@
-package com.example.springdemo.persistence.domain;
+package com.simplicity.authserver.persistence.domain;
 
 
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -9,7 +9,11 @@ import javax.persistence.*;
 import java.util.Collection;
 import java.util.HashSet;
 
-@Data
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "Role")
 @Table(name="roles")
 public class Role {

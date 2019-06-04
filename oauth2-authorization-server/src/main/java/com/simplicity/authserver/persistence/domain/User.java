@@ -1,12 +1,16 @@
-package com.example.springdemo.persistence.domain;
+package com.simplicity.authserver.persistence.domain;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.HashSet;
 
-@Data
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "User")
 @Table(name="users")
 public class User {

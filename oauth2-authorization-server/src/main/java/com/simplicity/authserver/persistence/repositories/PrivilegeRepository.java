@@ -1,6 +1,6 @@
-package com.example.springdemo.persistence.repositories;
+package com.simplicity.authserver.persistence.repositories;
 
-import com.example.springdemo.persistence.domain.Privilege;
+import com.simplicity.authserver.persistence.domain.Privilege;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PrivilegeRepository extends JpaRepository<Privilege, Long> {

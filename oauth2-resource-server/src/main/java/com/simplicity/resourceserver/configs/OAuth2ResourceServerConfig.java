@@ -1,122 +1,124 @@
-package com.example.springdemo.configs;
+package com.simplicity.resourceserver.configs;
 
-import com.example.springdemo.security.CustomUserDetailsService;
-import com.simplicity.resourceserver.configs.EnvVarsEnum;
+import lombok.SneakyThrows;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
-import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
-import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
-import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
+import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
+import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
-import org.springframework.security.oauth2.provider.token.TokenEnhancer;
-import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
-import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
+import org.springframework.security.oauth2.provider.token.store.*;
 
-import java.util.Arrays;
-import java.util.Objects;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Collections;
+import java.util.stream.Collectors;
 
 @Configuration
-@DependsOn({"authenticationManagerBean"})
-@Import(CustomUserDetailsService.class)
-public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter implements ApplicationContextAware {
-    private ApplicationContext applicationContext;
+@EnableResourceServer
+public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter implements ApplicationContextAware {
+    private static final String ROOT_PATTERN = "/**";
     private Environment environment;
-    @Autowired
-    @Qualifier("authenticationManagerBean")
-    private AuthenticationManager authenticationManager;
+    private TokenStore tokenStore;
+    @Override
+    public void configure(final HttpSecurity http) throws Exception {
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and().authorizeRequests()
+                // .access("#oauth2.hasScope('readScope')")
+                .anyRequest().permitAll();
 
-    @Autowired
-    @Qualifier("encoder")
-    private PasswordEncoder passwordEncoder;
+//        http.authorizeRequests()
+//                .antMatchers(HttpMethod.GET, ROOT_PATTERN).access("#oauth2.hasScope('read')")
+//                .antMatchers(HttpMethod.POST, ROOT_PATTERN).access("#oauth2.hasScope('write')")
+//                .antMatchers(HttpMethod.PATCH, ROOT_PATTERN).access("#oauth2.hasScope('write')")
+//                .antMatchers(HttpMethod.PUT, ROOT_PATTERN).access("#oauth2.hasScope('write')")
+//                .antMatchers(HttpMethod.DELETE, ROOT_PATTERN).access("#oauth2.hasScope('write')");
+    }
+    // JWT token store
 
-
-    @Autowired
-    private CustomUserDetailsService userDetailsService;
-
-
-    /*
-        tokenKeyAccess, checkTokenAccess take as a parameter one
-        of the security expressions defined in CustomSecurityExpressionRoot
-     */
 
     @Override
-    public void configure(final AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
-        oauthServer.allowFormAuthenticationForClients().tokenKeyAccess("permitAll()").checkTokenAccess("isAuthenticated()");
+    public void configure(final ResourceServerSecurityConfigurer resources) {
+        resources.tokenStore(tokenStore());
     }
 
-    @Override
-    public void configure(final ClientDetailsServiceConfigurer clients) throws Exception {
+    @Bean
+    public TokenStore tokenStore() {
+        if (tokenStore == null) {
+            tokenStore = new JwtTokenStore(accessTokenConverter());
+        }
+        return tokenStore;
+    }
 
-        // A few examples with implementations of different grant types
+    @Bean
+    @SneakyThrows
+    public JwtAccessTokenConverter accessTokenConverter() {
+        JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+        Resource pubKeyRes = new ClassPathResource("public.cert");
+        String publicKey;
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(pubKeyRes.getInputStream()), 16384)) {
+            publicKey = br.lines()
+                    .collect(Collectors.joining(System.lineSeparator()));
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
 
-        clients.inMemory().withClient("sampleClientId").authorizedGrantTypes("implicit").scopes("read", "write", "foo", "bar").autoApprove(false).accessTokenValiditySeconds(3600).redirectUris("http://localhost:8083/")
+        converter.setVerifierKey(publicKey);
+//        converter.convertAccessToken()
+        return converter;
+    }
 
-                .and().withClient(environment.getProperty(EnvVarsEnum.CLIENT_ID.name())).secret(passwordEncoder.encode(environment.getProperty(EnvVarsEnum.CLIENT_SECRET.name()))).authorizedGrantTypes("password", "authorization_code", "refresh_token").scopes("foo", "read", "write").accessTokenValiditySeconds(3600).resourceIds()
-                // 1 hour
-                .refreshTokenValiditySeconds(2592000)
-                // 30 days
-                .redirectUris("xxx", "http://" + environment.getProperty(EnvVarsEnum.APP_HOSTNAME.name()) + ":8089/")
 
-                .and().withClient("barClientIdPassword").secret(passwordEncoder.encode("secret")).authorizedGrantTypes("password", "authorization_code", "refresh_token").scopes("bar", "read", "write").accessTokenValiditySeconds(3600)
-                // 1 hour
-                .refreshTokenValiditySeconds(2592000) // 30 days
+    @Bean
+    public JwtClaimsSetVerifier jwtClaimsSetVerifier() {
+        return new DelegatingJwtClaimsSetVerifier(Collections.singletonList(issuerClaimVerifier()));
+    }
 
-                .and().withClient("testImplicitClientId").authorizedGrantTypes("implicit").scopes("read", "write", "foo", "bar").autoApprove(true).redirectUris("xxx");
-
+    @Bean
+    public JwtClaimsSetVerifier issuerClaimVerifier() {
+        try {
+            return new IssuerClaimVerifier(new URL("http://localhost:5050"));
+        } catch (final MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Bean
     @Primary
-    public DefaultTokenServices tokenServices() {
+    public DefaultTokenServices tokenServices(final TokenStore tokenStore) {
         final DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
-        defaultTokenServices.setTokenStore(tokenStore());
+        defaultTokenServices.setTokenStore(tokenStore);
+//        defaultTokenServices.setTokenEnhancer(tokenEnhancer());
         defaultTokenServices.setSupportRefreshToken(true);
         return defaultTokenServices;
     }
 
     @Override
-    public void configure(final AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-        final TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
-        tokenEnhancerChain.setTokenEnhancers(Arrays.asList(tokenEnhancer(), accessTokenConverter()));
-        endpoints
-                .tokenStore(tokenStore())
-                .tokenEnhancer(tokenEnhancerChain)
-                .authenticationManager(authenticationManager)
-                .userDetailsService(userDetailsService);
-    }
-
-    @Bean
-    public TokenStore tokenStore() {
-        return new JwtTokenStore(accessTokenConverter());
-    }
-
-    @Bean
-    public JwtAccessTokenConverter accessTokenConverter() {
-        final JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-        converter.setSigningKey(Objects.requireNonNull(environment.getProperty(EnvVarsEnum.JWT_SIGNING_KEY.name())));
-        // final KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(new ClassPathResource("mytest.jks"), "mypass".toCharArray());
-        // converter.setKeyPair(keyStoreKeyFactory.getKeyPair("mytest"));
-        return converter;
-    }
-
-    @Bean
-    public TokenEnhancer tokenEnhancer() {
-        return new com.example.springdemo.configs.CustomTokenEnhancer();
-    }
-
-    @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
         environment = applicationContext.getEnvironment();
+    }
+//
+//    @Bean
+//    public TokenEnhancer tokenEnhancer() {
+//        return new CustomTokenEnhancer();
+//    }
+
+    @Bean
+    public PasswordEncoder encoder() {
+        return new BCryptPasswordEncoder(11);
     }
 }

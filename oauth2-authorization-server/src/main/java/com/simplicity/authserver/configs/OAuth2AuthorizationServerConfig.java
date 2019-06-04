@@ -1,6 +1,6 @@
-package com.example.springdemo.configs;
+package com.simplicity.authserver.configs;
 
-import com.example.springdemo.security.CustomUserDetailsService;
+import com.simplicity.authserver.security.CustomUserDetailsService;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -15,14 +16,13 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
-import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
+import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 
 import java.util.Arrays;
-import java.util.Objects;
 
 @Configuration
 @DependsOn({"authenticationManagerBean"})
@@ -86,7 +86,8 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
     @Override
     public void configure(final AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         final TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
-        tokenEnhancerChain.setTokenEnhancers(Arrays.asList(tokenEnhancer(), accessTokenConverter()));
+//        tokenEnhancerChain.setTokenEnhancers(Arrays.asList(tokenEnhancer(), accessTokenConverter()));
+        tokenEnhancerChain.setTokenEnhancers(Arrays.asList(accessTokenConverter()));
         endpoints
                 .tokenStore(tokenStore())
                 .tokenEnhancer(tokenEnhancerChain)
@@ -99,19 +100,36 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
         return new JwtTokenStore(accessTokenConverter());
     }
 
+
+//    @Bean
+//    @SneakyThrows
+//    protected JwtAccessTokenConverter accessTokenConverter() {
+//
+//        KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(new ClassPathResource("jwt.jks"), "password".toCharArray());
+////        JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+//        CustomJwtAccessTokenConverter converter = new CustomJwtAccessTokenConverter();
+//
+//        converter.setKeyPair(keyStoreKeyFactory.getKeyPair("jwt"));
+////        converter.setSigner(new MacSigner(new SecretKeySpec(privateKey.getBytes(), "HMACSHA256")));
+////        converter.afterPropertiesSet();
+//        return converter;
+//    }
+
     @Bean
+
     public JwtAccessTokenConverter accessTokenConverter() {
-        final JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-        converter.setSigningKey(Objects.requireNonNull(environment.getProperty(EnvVarsEnum.JWT_SIGNING_KEY.name())));
-        // final KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(new ClassPathResource("mytest.jks"), "mypass".toCharArray());
-        // converter.setKeyPair(keyStoreKeyFactory.getKeyPair("mytest"));
+        // specifically the following line:
+        JwtAccessTokenConverter converter = new CustomJwtAccessTokenConverter();
+        KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(new ClassPathResource("jwt.jks"), "password".toCharArray());
+        converter.setKeyPair(keyStoreKeyFactory.getKeyPair("jwt"));
         return converter;
     }
 
-    @Bean
-    public TokenEnhancer tokenEnhancer() {
-        return new CustomTokenEnhancer();
-    }
+
+//    @Bean
+//    public TokenEnhancer tokenEnhancer() {
+//        return new CustomTokenEnhancer();
+//    }
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

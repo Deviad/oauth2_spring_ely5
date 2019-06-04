@@ -1,7 +1,7 @@
-package com.example.springdemo.configs;
+package com.simplicity.authserver.configs;
 
-import com.example.springdemo.security.CustomMethodSecurityExpressionHandler;
-import com.example.springdemo.security.CustomPermissionEvaluator;
+import com.simplicity.authserver.security.CustomMethodSecurityExpressionHandler;
+import com.simplicity.authserver.security.CustomPermissionEvaluator;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;

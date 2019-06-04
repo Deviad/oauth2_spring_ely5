@@ -1,4 +1,4 @@
-package com.example.springdemo.configs;
+package com.simplicity.authserver.configs;
 
 public enum EnvVarsEnum {
     DB_NAME,

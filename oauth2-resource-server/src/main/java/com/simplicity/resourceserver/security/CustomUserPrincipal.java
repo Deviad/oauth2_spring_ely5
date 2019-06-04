@@ -1,8 +1,8 @@
-package com.simplicity.authserver.security;
+package com.simplicity.resourceserver.security;
 
-import com.simplicity.authserver.persistence.domain.Privilege;
-import com.simplicity.authserver.persistence.domain.Role;
-import com.simplicity.authserver.persistence.domain.User;
+import com.simplicity.resourceserver.persistence.domain.Privilege;
+import com.simplicity.resourceserver.persistence.domain.Role;
+import com.simplicity.resourceserver.persistence.domain.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

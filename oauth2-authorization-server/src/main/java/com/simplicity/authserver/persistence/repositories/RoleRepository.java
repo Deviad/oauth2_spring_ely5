@@ -1,6 +1,6 @@
-package com.example.springdemo.persistence.repositories;
+package com.simplicity.authserver.persistence.repositories;
 
-import com.example.springdemo.persistence.domain.Role;
+import com.simplicity.authserver.persistence.domain.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RoleRepository extends JpaRepository<Role, Long> {

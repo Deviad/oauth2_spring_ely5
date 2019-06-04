@@ -19,12 +19,6 @@ public class WebConfig {
                 .allowedMethods("*")
                 .maxAge(3600)
                 .allowCredentials(true);
-                registry
-                        .addMapping("/oauth/token")
-                        .allowedOrigins("*")
-                        .allowedMethods("*")
-                        .maxAge(3600)
-                        .allowCredentials(true);
             }
         };
     }

@@ -65,10 +65,10 @@ buildscript {
 
 dependencies {
     // This dependency is found on compile classpath of this component and consumers.
-    api("org.springframework.boot:spring-boot-starter-aop:$springBootVersion")
+//    api("org.springframework.boot:spring-boot-starter-aop:$springBootVersion")
     api("org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion")
     api("org.springframework.boot:spring-boot-starter-jdbc:$springBootVersion")
-    api("org.springframework.boot:spring-boot-starter-security:$springBootVersion")
+    api("org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:$springBootVersion")
     api("org.springframework.boot:spring-boot-starter-validation:$springBootVersion")
     api("org.springframework.boot:spring-boot-starter-web:$springBootVersion")
     api("org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:$springBootVersion")
