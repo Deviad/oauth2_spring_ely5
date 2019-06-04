@@ -1,5 +1,6 @@
 package com.simplicity.resourceserver.security;
 
+import com.simplicity.resourceserver.configs.CustomTokenConverter;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionOperations;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
@@ -59,7 +60,7 @@ public class CustomSecurityExpressionRoot implements MethodSecurityExpressionOpe
 
     @Override
     public final boolean hasAnyRole(String... roles) {
-        return hasAnyAuthorityName(defaultRolePrefix, roles);
+        return hasAnyRoleName(defaultRolePrefix, roles);
     }
 
     private boolean hasAnyAuthorityName(String prefix, String... roles) {
@@ -74,6 +75,21 @@ public class CustomSecurityExpressionRoot implements MethodSecurityExpressionOpe
 
         return false;
     }
+
+
+    private boolean hasAnyRoleName(String prefix, String... roles) {
+        final Set<String> roleSet = getRoleSet();
+
+        for (final String role : roles) {
+            final String defaultedRole = getRoleWithDefaultPrefix(prefix, role);
+            if (roleSet.contains(defaultedRole)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
     @Override
     public final Authentication getAuthentication() {
@@ -124,6 +140,15 @@ public class CustomSecurityExpressionRoot implements MethodSecurityExpressionOpe
 
     public void setDefaultRolePrefix(String defaultRolePrefix) {
         this.defaultRolePrefix = defaultRolePrefix;
+    }
+
+
+    private Set<String> getRoleSet() {
+        if (roles == null) {
+            roles = new HashSet<>();
+            roles.addAll(CustomTokenConverter.getOAuth2RequestFromAuthentication().getRoles());
+        }
+        return roles;
     }
 
     private Set<String> getAuthoritySet() {

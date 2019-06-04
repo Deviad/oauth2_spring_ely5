@@ -4,6 +4,7 @@ import com.simplicity.resourceserver.api.v1.model.UserWithInfoDTO;
 import com.simplicity.resourceserver.configs.CustomOauth2Request;
 import com.simplicity.resourceserver.persistence.services.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -48,7 +49,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/me", produces = "application/json")
-//    @PreAuthorize("hasPermission(#user, 'READ_PRIVILEDGE')")
+    @PreAuthorize("hasRole('ADMIN')")
     public Map<String, Object> user(OAuth2Authentication user) {
         Map<String, Object> userInfo = new HashMap<>();
         userInfo.put(

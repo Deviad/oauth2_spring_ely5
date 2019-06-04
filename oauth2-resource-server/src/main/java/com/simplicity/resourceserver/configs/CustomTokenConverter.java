@@ -22,10 +22,10 @@ public class CustomTokenConverter extends DefaultAccessTokenConverter {
 
     public static CustomOauth2Request getOAuth2RequestFromAuthentication() {
         Authentication authentication = getAuthentication();
-        return getTenantAwareOAuth2Request(authentication);
+        return getCustomOAuth2Request(authentication);
     }
 
-    private static CustomOauth2Request getTenantAwareOAuth2Request(Authentication authentication) {
+    private static CustomOauth2Request getCustomOAuth2Request(Authentication authentication) {
         if (!authentication.getClass().isAssignableFrom(OAuth2Authentication.class)) {
             throw new RuntimeException("unexpected authentication object, expected OAuth2 authentication object");
         }
