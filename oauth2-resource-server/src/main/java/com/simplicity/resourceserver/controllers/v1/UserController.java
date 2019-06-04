@@ -1,11 +1,13 @@
 package com.simplicity.resourceserver.controllers.v1;
 
 import com.simplicity.resourceserver.api.v1.model.UserWithInfoDTO;
+import com.simplicity.resourceserver.configs.CustomOauth2Request;
 import com.simplicity.resourceserver.persistence.services.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,15 +49,18 @@ public class UserController {
 
     @GetMapping(value = "/me", produces = "application/json")
 //    @PreAuthorize("hasPermission(#user, 'READ_PRIVILEDGE')")
-    public Map<String, Object> user(Principal principal) {
+    public Map<String, Object> user(OAuth2Authentication user) {
         Map<String, Object> userInfo = new HashMap<>();
-//        userInfo.put(
-//                "user",
-//                user.getUserAuthentication()
-//                        .getPrincipal());
-//        userInfo.put("authorities", AuthorityUtils.authorityListToSet(user.getUserAuthentication()
-//                .getAuthorities()));
+        userInfo.put(
+                "user",
+                user.getUserAuthentication()
+                        .getPrincipal());
+        userInfo.put("roles", ((CustomOauth2Request) user.getOAuth2Request()).getRoles());
+        userInfo.put("authorities", AuthorityUtils.authorityListToSet(user.getUserAuthentication()
+                .getAuthorities()));
         return userInfo;
+
+
     }
 //
 //    @GetMapping(value = "/me")

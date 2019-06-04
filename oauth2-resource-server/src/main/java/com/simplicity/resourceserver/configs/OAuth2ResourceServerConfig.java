@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.*;
@@ -65,9 +66,11 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
     }
 
     @Bean
+    @Primary
     @SneakyThrows
     public JwtAccessTokenConverter accessTokenConverter() {
         JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+        converter.setAccessTokenConverter(defaultAccessTokenConverter());
         Resource pubKeyRes = new ClassPathResource("public.cert");
         String publicKey;
         try (BufferedReader br = new BufferedReader(new InputStreamReader(pubKeyRes.getInputStream()), 16384)) {
@@ -105,6 +108,12 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
 //        defaultTokenServices.setTokenEnhancer(tokenEnhancer());
         defaultTokenServices.setSupportRefreshToken(true);
         return defaultTokenServices;
+    }
+
+
+    @Bean
+    DefaultAccessTokenConverter defaultAccessTokenConverter() {
+        return new CustomTokenConverter();
     }
 
     @Override
