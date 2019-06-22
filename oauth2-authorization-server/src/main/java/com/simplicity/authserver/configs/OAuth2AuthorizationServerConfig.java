@@ -58,19 +58,15 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
 
         // A few examples with implementations of different grant types
 
-        clients.inMemory().withClient("sampleClientId").authorizedGrantTypes("implicit").scopes("read", "write", "foo", "bar").autoApprove(false).accessTokenValiditySeconds(3600).redirectUris("http://localhost:8083/")
-
-                .and().withClient(environment.getProperty(EnvVarsEnum.CLIENT_ID.name())).secret(passwordEncoder.encode(environment.getProperty(EnvVarsEnum.CLIENT_SECRET.name()))).authorizedGrantTypes("password", "authorization_code", "refresh_token").scopes("foo", "read", "write").accessTokenValiditySeconds(3600).resourceIds()
+        clients.inMemory().
+                withClient(environment.getProperty(EnvVarsEnum.CLIENT_ID.name()))
+                .secret(passwordEncoder.encode(environment.getProperty(EnvVarsEnum.CLIENT_SECRET.name())))
+                .authorizedGrantTypes("password", "authorization_code", "refresh_token")
+                .scopes("foo", "read", "write")
+                .accessTokenValiditySeconds(3600).resourceIds()
                 // 1 hour
-                .refreshTokenValiditySeconds(2592000)
+                .refreshTokenValiditySeconds(2592000);
                 // 30 days
-                .redirectUris("xxx", "http://" + environment.getProperty(EnvVarsEnum.APP_HOSTNAME.name()) + ":8089/")
-
-                .and().withClient("barClientIdPassword").secret(passwordEncoder.encode("secret")).authorizedGrantTypes("password", "authorization_code", "refresh_token").scopes("bar", "read", "write").accessTokenValiditySeconds(3600)
-                // 1 hour
-                .refreshTokenValiditySeconds(2592000) // 30 days
-
-                .and().withClient("testImplicitClientId").authorizedGrantTypes("implicit").scopes("read", "write", "foo", "bar").autoApprove(true).redirectUris("xxx");
 
     }
 

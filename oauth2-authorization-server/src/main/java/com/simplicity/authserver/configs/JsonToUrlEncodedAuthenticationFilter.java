@@ -43,6 +43,12 @@ public class JsonToUrlEncodedAuthenticationFilter implements Filter {
         f.setAccessible(true);
         Request realRequest = (Request) f.get(request);
 
+
+        if(realRequest.getContentType() == null) {
+            chain.doFilter(request, response);
+            return;
+        }
+
        //Request content type without spaces (inner spaces matter)
        //trim deletes spaces only at the beginning and at the end of the string
         String contentType = realRequest.getContentType().toLowerCase().chars()
