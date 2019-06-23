@@ -15,6 +15,8 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+
 @Slf4j
 @Configuration
 @Order(Integer.MAX_VALUE - 8)
@@ -37,14 +39,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/login").permitAll()
-                .antMatchers("/api/**").permitAll()
+        http
+                .authorizeRequests()
+//                .antMatchers("/login").permitAll()
+                .antMatchers("/something_to_see").authenticated()
                 .antMatchers("/admin").hasRole("ADMIN")
-                .anyRequest().authenticated()
-                .and().formLogin().permitAll()
-                .and().csrf().disable();
+                .antMatchers("/authorize.html", "/token.html", "/", "/login").permitAll()
 
+                .and()
+                .formLogin().permitAll()
+
+                .and()
+                .logout().deleteCookies("JSESSIONID", "XSRF-TOKEN")
+
+//                .and()
+//                .rememberMe().key("uniqueAndSecret").tokenValiditySeconds(31536000)
+
+                .and()
+                .csrf()
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
     }
 
     @Bean

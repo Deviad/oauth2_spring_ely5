@@ -37,7 +37,7 @@
 			// credentials: "include",
 			method: "post",
 			headers: {
-				"Content-type": "application/json; charset=UTF-8",
+				"Content-type": "application/json;charset=UTF-8",
                 // "Authorization": `Basic '${+btoa("fooClientIdPassword:secret")}'`
 			},
 			body: JSON.stringify({
@@ -45,11 +45,15 @@
 				"client_id": "fooClientIdPassword",
 				"client_secret": "secret",
                 "code": oauth2Ely5Utils.getParameterByName("code"),
-				"redirect_uri": "http://localhost:5050/something_to_see"
+				"redirect_uri": "http://localhost:5050/issue_token"
 			})
 		})
+        .then(res=> ((res.status / 100) | 0) === 2 && res)
+        .then(res=>res.json())
 		.then(function (data) {
 			console.log('Request succeeded with JSON response', data);
+			sessionStorage.setItem("jwtToken", JSON.stringify(data));
+			window.location.href="/something_to_see"
 		})
 		.catch(function (error) {
 			console.log('Request failed', error);
