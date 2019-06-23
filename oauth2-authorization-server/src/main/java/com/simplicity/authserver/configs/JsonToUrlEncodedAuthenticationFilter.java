@@ -58,7 +58,7 @@ public class JsonToUrlEncodedAuthenticationFilter implements Filter {
 
         if ((contentType.equals(MediaType.APPLICATION_JSON_UTF8_VALUE.toLowerCase())||
                 contentType.equals(MediaType.APPLICATION_JSON_VALUE.toLowerCase()))
-                        && Objects.equals((realRequest).getServletPath(), "/oauth/token")) {
+                        && (Objects.equals((realRequest).getServletPath(), "/oauth/token"))) {
 
             InputStream is = realRequest.getInputStream();
             try (BufferedReader br = new BufferedReader(new InputStreamReader(is), 16384)) {

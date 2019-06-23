@@ -14,7 +14,7 @@ public class CustomJwtAccessTokenConverter extends JwtAccessTokenConverter {
     @Override
     public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
         Map<String, Object> info = new LinkedHashMap<>(accessToken.getAdditionalInformation());
-        info.put("roles", ((CustomUserPrincipal) authentication.getUserAuthentication().getPrincipal()).getRoles()); // th
+        info.put("roles", ((CustomUserPrincipal) authentication.getUserAuthentication().getPrincipal()).getRoles());
 
         DefaultOAuth2AccessToken customAccessToken = new DefaultOAuth2AccessToken(accessToken);
         customAccessToken.setAdditionalInformation(info);

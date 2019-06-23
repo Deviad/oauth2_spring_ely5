@@ -41,6 +41,20 @@ public class WebConfig {
 
 //                registry.addResourceHandler("/documentation/swagger-ui.html**").addResourceLocations("classpath:/META-INF/resources/swagger-ui.html");
 //                registry.addResourceHandler("/documentation/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
+                registry
+                    .addResourceHandler("/resources/**")
+                    .addResourceLocations("classpath:/resources/");
+//                    .resourceChain(true)
+//                    .addResolver(new PathResourceResolver() {
+//                        @Override
+//                        protected Resource getResource(String resourcePath,
+//                                                       Resource location) throws IOException {
+//                            Resource requestedResource = location.createRelative(resourcePath);
+//                            return requestedResource.exists() && requestedResource.isReadable() ? requestedResource
+//                                    : new ClassPathResource("/gui-new/app.html");
+//                        }
+//                    });
+
             }
 
             @Override

@@ -3,13 +3,9 @@ package com.simplicity.authserver.configs;
 import com.simplicity.authserver.configs.properties.Oauth2SecurityProperties;
 import com.simplicity.authserver.security.CustomUserDetailsService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.*;
-import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,9 +26,7 @@ import java.util.Arrays;
 @Configuration
 @DependsOn({"authenticationManagerBean"})
 @Import(CustomUserDetailsService.class)
-public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter implements ApplicationContextAware {
-    private ApplicationContext applicationContext;
-    private Environment environment;
+public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter{
     @Autowired
     @Qualifier("authenticationManagerBean")
     private AuthenticationManager authenticationManager;
@@ -62,19 +56,18 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
     @Override
     public void configure(final ClientDetailsServiceConfigurer clients) throws Exception {
         // A few examples with implementations of different grant types
-        log.info("Client id name is: {}", environment.getProperty(EnvVarsEnum.CLIENT_ID.name()));
+        log.info("Client id, Client secret: {}, {}", new String[]{oauth2Props.getOauth2().getClient().getClientId(), oauth2Props.getOauth2().getClient().getClientSecret()});
 
         clients.inMemory().
                 withClient(oauth2Props.getOauth2().getClient().getClientId())
                 .secret(passwordEncoder.encode(oauth2Props.getOauth2().getClient().getClientSecret()))
                 .authorizedGrantTypes("password", "authorization_code", "refresh_token")
                 .scopes("foo", "read", "write")
-                .redirectUris("http://www.google.com")
+                .redirectUris("http://localhost:5050/something_to_see")
                 .accessTokenValiditySeconds(3600).resourceIds()
                 // 1 hour
                 .refreshTokenValiditySeconds(2592000);
                 // 30 days
-
     }
 
     @Bean
@@ -103,21 +96,6 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
         return new JwtTokenStore(accessTokenConverter());
     }
 
-
-//    @Bean
-//    @SneakyThrows
-//    protected JwtAccessTokenConverter accessTokenConverter() {
-//
-//        KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(new ClassPathResource("jwt.jks"), "password".toCharArray());
-////        JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-//        CustomJwtAccessTokenConverter converter = new CustomJwtAccessTokenConverter();
-//
-//        converter.setKeyPair(keyStoreKeyFactory.getKeyPair("jwt"));
-////        converter.setSigner(new MacSigner(new SecretKeySpec(privateKey.getBytes(), "HMACSHA256")));
-////        converter.afterPropertiesSet();
-//        return converter;
-//    }
-
     @Bean
 
     public JwtAccessTokenConverter accessTokenConverter() {
@@ -128,16 +106,4 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
         return converter;
     }
 
-
-//    @Bean
-//    public TokenEnhancer tokenEnhancer() {
-//        return new CustomTokenEnhancer();
-//    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-        environment = applicationContext.getEnvironment();
-        log.info("Logging - getProperty: {}", environment.getProperty("CLIENT_ID"));
-    }
 }
