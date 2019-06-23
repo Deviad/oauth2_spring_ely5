@@ -1,6 +1,8 @@
 package com.simplicity.authserver.configs;
 
+import com.simplicity.authserver.configs.properties.Oauth2SecurityProperties;
 import com.simplicity.authserver.security.CustomUserDetailsService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -24,6 +26,7 @@ import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFacto
 
 import java.util.Arrays;
 
+@Slf4j
 @Configuration
 @DependsOn({"authenticationManagerBean"})
 @Import(CustomUserDetailsService.class)
@@ -43,6 +46,9 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
     private CustomUserDetailsService userDetailsService;
 
 
+    @Autowired
+    private Oauth2SecurityProperties oauth2Props;
+
     /*
         tokenKeyAccess, checkTokenAccess take as a parameter one
         of the security expressions defined in CustomSecurityExpressionRoot
@@ -55,14 +61,15 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
 
     @Override
     public void configure(final ClientDetailsServiceConfigurer clients) throws Exception {
-
         // A few examples with implementations of different grant types
+        log.info("Client id name is: {}", environment.getProperty(EnvVarsEnum.CLIENT_ID.name()));
 
         clients.inMemory().
-                withClient(environment.getProperty(EnvVarsEnum.CLIENT_ID.name()))
-                .secret(passwordEncoder.encode(environment.getProperty(EnvVarsEnum.CLIENT_SECRET.name())))
+                withClient(oauth2Props.getOauth2().getClient().getClientId())
+                .secret(passwordEncoder.encode(oauth2Props.getOauth2().getClient().getClientSecret()))
                 .authorizedGrantTypes("password", "authorization_code", "refresh_token")
                 .scopes("foo", "read", "write")
+                .redirectUris("http://www.google.com")
                 .accessTokenValiditySeconds(3600).resourceIds()
                 // 1 hour
                 .refreshTokenValiditySeconds(2592000);
@@ -131,5 +138,6 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
         environment = applicationContext.getEnvironment();
+        log.info("Logging - getProperty: {}", environment.getProperty("CLIENT_ID"));
     }
 }

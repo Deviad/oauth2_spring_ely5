@@ -8,8 +8,8 @@ import com.simplicity.authserver.persistence.repositories.PrivilegeRepository;
 import com.simplicity.authserver.persistence.repositories.RoleRepository;
 import com.simplicity.authserver.persistence.repositories.UserInfoRepository;
 import com.simplicity.authserver.persistence.repositories.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +20,8 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Component("setupDataForTest")
-@Profile("test")
+//@Profile("test")
+@Slf4j
 public class SetupData implements InitializingBean {
     private final UserRepository userRepository;
     private final PrivilegeRepository privilegeRepository;
@@ -75,6 +76,8 @@ public class SetupData implements InitializingBean {
             userInfoRepository.save(userInfo1);
             user1.setUserInfo(userInfo1);
             userRepository.save(user1);
+            log.info("Saved test user with username {}", user1.getUsername());
+
         }
 //        if(userRepository.findUserByUsername("admin") == null) {
 //            Role adminRole = roleRepository.findAll().stream().filter(role-> role.getName().equals("ROLE_ADMIN")).findFirst().orElseThrow(EntityNotFoundException::new);

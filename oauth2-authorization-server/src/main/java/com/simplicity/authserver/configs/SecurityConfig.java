@@ -2,6 +2,7 @@ package com.simplicity.authserver.configs;
 
 
 import com.simplicity.authserver.security.CustomUserDetailsService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +15,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
+@Slf4j
 @Configuration
 @Order(Integer.MAX_VALUE - 8)
 //@ComponentScan("com.example.springdemo.security")
