@@ -1,4 +1,4 @@
-package com.simplicity.authserver.controller;
+package com.simplicity.resourceserver.controllers.v1;
 
 
 import org.springframework.stereotype.Controller;
@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/")
 public class AuthorizationController {
 
-//
     @RequestMapping(value = {"/something_to_see"})
     @ResponseBody
     public String index() {
@@ -21,8 +20,9 @@ public class AuthorizationController {
         return "forward:/authorize.html";
     }
 
-    @RequestMapping(value = {"/issue_token","/issue_token/{[path:[^\\.]*}"})
+    @RequestMapping(value = {"/issue_token", "/issue_token/{[path:[^\\.]*}"})
     public String issue() {
         return "forward:/token.html";
     }
 }
+

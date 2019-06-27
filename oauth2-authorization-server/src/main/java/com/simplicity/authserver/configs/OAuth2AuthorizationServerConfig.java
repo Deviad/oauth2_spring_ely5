@@ -63,7 +63,7 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
                 .secret(passwordEncoder.encode(oauth2Props.getOauth2().getClient().getClientSecret()))
                 .authorizedGrantTypes("password", "authorization_code", "refresh_token")
                 .scopes("foo", "read", "write")
-                .redirectUris("http://localhost:5050/issue_token", "http://localhost:5050/authorization_code", "http://localhost:5050/something_to_see")
+                .redirectUris("http://localhost:5051/issue_token", "http://localhost:5051/authorization_code", "http://localhost:5051/something_to_see")
                 .accessTokenValiditySeconds(3600).resourceIds()
                 // 1 hour
                 .refreshTokenValiditySeconds(2592000);

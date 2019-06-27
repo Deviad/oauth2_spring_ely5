@@ -39,10 +39,10 @@
 					"response_type": "code",
 					"client_id": "fooClientIdPassword",
 					"scope": "read",
-					"redirect_uri": "http://localhost:5050/issue_token",
+					"redirect_uri": "http://localhost:5051/issue_token",
                     // "state": oauth2Ely5Utils.cookieStorage.getItem("XSRF-TOKEN")
 				});
-      window.location.href=`/oauth/authorize/?${urlencoded}`;
+      window.location.href=`http://localhost:5050/oauth/authorize/?${urlencoded}`;
 	}
 	handleLocalAuth();
 </script>
