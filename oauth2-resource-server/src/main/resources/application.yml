@@ -30,6 +30,8 @@ spring:
     url: jdbc:${DB_DBMS}://${DB_HOSTNAME}:3306/${DB_NAME}?useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+  resources:
+    add-mappings: false
 ---
 spring:
   profiles: development

@@ -6,9 +6,6 @@
     <title>Demo</title>
     <meta name="description" content=""/>
     <meta name="viewport" content="width=device-width"/>
-    <meta name="_csrf" content="${_csrf.token}"/>
-    <meta name="_csrf_header" content="${_csrf.headerName}"/>
-    <base href="/"/>
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
@@ -31,20 +28,37 @@
         <button onClick="logout()" class="btn btn-primary">Logout</button>
     </div>
 </div>
-<script src="js.cookie.js"></script>
-<script src="utils.js"></script>
+<script src="/vanilla/utils.js"></script>
 <script type="text/javascript">
 	function handleLocalAuth() {
-		var urlencoded = oauth2Ely5Utils.urlencode({
-					"response_type": "code",
-					"client_id": "fooClientIdPassword",
-					"scope": "read",
-					"redirect_uri": "http://localhost:5051/issue_token",
-                    // "state": oauth2Ely5Utils.cookieStorage.getItem("XSRF-TOKEN")
-				});
-      window.location.href=`http://localhost:5050/oauth/authorize/?${urlencoded}`;
+		var authorizeUrl = "http://localhost:5050/oauth/token";
+		fetch(authorizeUrl, {
+			// credentials: "include",
+			method: "post",
+			headers: {
+				"Content-type": "application/json;charset=UTF-8",
+                // "Authorization": `Basic '${+btoa("fooClientIdPassword:secret")}'`
+			},
+			body: JSON.stringify({
+				"grant_type": "authorization_code",
+				"client_id": "fooClientIdPassword",
+				"client_secret": "secret",
+                "code": oauth2Ely5Utils.getParameterByName("code"),
+				"redirect_uri": "http://localhost:5051/vanilla/issue_token"
+			})
+		})
+        .then(res=> ((res.status / 100) | 0) === 2 && res)
+        .then(res=>res.json())
+		.then(function (data) {
+			console.log('Request succeeded with JSON response', data);
+			sessionStorage.setItem("jwtToken", JSON.stringify(data));
+			window.location.href="http://localhost:5051/vanilla/something_to_see"
+		})
+		.catch(function (error) {
+			console.log('Request failed', error);
+		});
 	}
-	handleLocalAuth();
+	handleLocalAuth(window);
 </script>
 </body>
 </html>
