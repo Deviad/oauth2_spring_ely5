@@ -12,8 +12,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 
     private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
             "classpath:/META-INF/resources/", "classpath:/resources/",
-            "classpath:/static/", "classpath:/public/" };
-
+            "classpath:/static/", "classpath:/public/"};
 
 
     @Override
@@ -24,18 +23,9 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         registry.addResourceHandler("/vanilla/**")
                 .addResourceLocations("classpath:/vanilla/");
 
-            registry.addResourceHandler("/react/**")
-                    .addResourceLocations("classpath:/react/")
+        registry.addResourceHandler("/react/**")
+                .addResourceLocations("classpath:/react/")
                 .resourceChain(true);
-//                .addResolver(new PathResourceResolver() {
-//            @Override
-//            protected Resource getResource(String resourcePath,
-//                                           Resource location) throws IOException {
-//                Resource requestedResource = location.createRelative(resourcePath);
-//                return requestedResource.exists() && requestedResource.isReadable() ? requestedResource
-//                        : new ClassPathResource("/vanilla/authorize.html");
-//            }
-//        });
 
     }
 
@@ -64,7 +54,5 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
                 .setViewName("forward:/react/index.html");
         registry.addViewController("/react/**/{path:[^\\.]*}")
                 .setViewName("forward:/react/index.html");
-//        registry.addViewController("/react/{spring:\\w+}/**{spring:?!(\\.js|\\.css)$}")
-//                .setViewName("forward:/react/index.html");
     }
 }
