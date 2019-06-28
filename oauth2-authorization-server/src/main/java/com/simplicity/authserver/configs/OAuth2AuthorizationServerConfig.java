@@ -58,12 +58,24 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
         // A few examples with implementations of different grant types
         log.info("Client id, Client secret: {}, {}", new String[]{oauth2Props.getOauth2().getClient().getClientId(), oauth2Props.getOauth2().getClient().getClientSecret()});
 
+
+        String[] authorizedUrls = {
+                "http://localhost:5051/vanilla/issue_token",
+                "http://localhost:5051/vanilla/authorization_code",
+                "http://localhost:5051/vanilla/something_to_see",
+                "http://localhost:5051/react/oauth/authorization",
+                "http://localhost:5051/react/oauth/token",
+                "http://localhost:3000/oauth/authorization",
+                "http://localhost:3000/oauth/token",
+
+        };
+
         clients.inMemory().
                 withClient(oauth2Props.getOauth2().getClient().getClientId())
                 .secret(passwordEncoder.encode(oauth2Props.getOauth2().getClient().getClientSecret()))
                 .authorizedGrantTypes("password", "authorization_code", "refresh_token")
                 .scopes("foo", "read", "write")
-                .redirectUris("http://localhost:5051/vanilla/issue_token", "http://localhost:5051/vanilla/authorization_code", "http://localhost:5051/vanilla/something_to_see")
+                .redirectUris(authorizedUrls)
                 .accessTokenValiditySeconds(3600).resourceIds()
                 // 1 hour
                 .refreshTokenValiditySeconds(2592000);

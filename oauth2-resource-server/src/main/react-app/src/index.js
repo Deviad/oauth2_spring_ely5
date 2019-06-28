@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import {setBasepath} from "hookrouter";
+
+setBasepath('/react/');
 
 ReactDOM.render(<App />, document.getElementById('root'));
 

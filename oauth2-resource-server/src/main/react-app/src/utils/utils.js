@@ -1,4 +1,6 @@
-var oauth2Ely5Utils = (function() {
+import 'js-cookie';
+
+const oauth2Ely5Utils = (function() {
 
 	function urlencode(obj) {
 		var str = [];
@@ -70,7 +72,7 @@ var oauth2Ely5Utils = (function() {
 	};
 
 	var storageFactory = (function storageFactory() {
-		var getStorage = () => storageAvailable("sessionStorage")
+		const getStorage = () => storageAvailable("sessionStorage")
 			? sessionStorage
 			: storageAvailable("localStorage")
 				? localStorage
@@ -88,3 +90,5 @@ var oauth2Ely5Utils = (function() {
 	}
 
 })();
+
+export default oauth2Ely5Utils;

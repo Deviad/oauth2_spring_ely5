@@ -1,26 +1,39 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import {getWorkingPath, setBasepath, useControlledInterceptor, useRoutes} from "hookrouter";
+import OAuth2 from "./Oauth2";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const routes = {
+	'/': () => <HomePage/>,
+	'/oauth*': () => <OAuth2/>,
+	'/fakeuser': () => <FakeUser />
+};
+
+
+const NotFoundPage = () => <div>Page not Found</div>;
+
+
+const FakeUser = () => <div>Fake User Component</div>
+
+
+const HomePage = () => {
+	return <div>This is a showcase of OAuth2 integration in React</div>
+
+};
+
+
+
+
+const App = (props) => {
+
+	const match = useRoutes(routes);
+
+	return (
+		<div className="App" style={{marginTop:'100px'}}>
+			{console.log('getWorkingPath', getWorkingPath())}
+			{match || <NotFoundPage/>}
+		</div>
+	);
+};
 
 export default App;
