@@ -5,7 +5,7 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import {setBasepath} from "hookrouter";
 
-setBasepath('/react/');
+setBasepath('/react');
 
 ReactDOM.render(<App />, document.getElementById('root'));
 

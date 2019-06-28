@@ -1,0 +1,41 @@
+server:
+  port: ${SERVER_PORT}
+  servlet:
+    #    context-path: /api
+    context-path: /
+spring:
+  profiles:
+    active: ${ACTIVE_PROFILE}
+  jpa:
+    hibernate:
+  #      ddl-auto: update
+      ddl-auto: ${DDL_AUTO}
+    database: mysql
+    show-sql: true
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+  datasource:
+    url: jdbc:${DB_DBMS}://${DB_HOSTNAME}:3306/${DB_NAME}?useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      additional-paths: resources/**, static/**
+
+security:
+  oauth2:
+    client:
+      client-id: ${CLIENT_ID}
+      client-secret: ${CLIENT_SECRET}
+      access-token-uri: http://${APP_HOSTNAME}:${server.port}/oauth/token
+#    resource:
+#      user-info-uri: http://${APP_HOSTNAME}:${SERVER_PORT}/api/v1/users/me
+logging:
+  level:
+    root: INFO
+    org:
+      springframework:
+        web: TRACE
+

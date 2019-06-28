@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>Demo</title>
+    <meta name="description" content=""/>
+    <meta name="viewport" content="width=device-width"/>
+    <meta name="_csrf" content="${_csrf.token}"/>
+    <meta name="_csrf_header" content="${_csrf.headerName}"/>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+<h1>Login</h1>
+<div class="container unauthenticated">
+    <div>
+        With Facebook: <a href="/login/facebook">click here</a>
+    </div>
+    <div>
+        With Github: <a href="/login/github">click here</a>
+    </div>
+</div>
+<div class="container authenticated" style="display: none">
+    Logged in as: <span id="user"></span>
+    <div>
+        <button onClick="logout()" class="btn btn-primary">Logout</button>
+    </div>
+</div>
+<script src="/vanilla/js.cookie.js"></script>
+<script src="/vanilla/utils.js"></script>
+<script type="text/javascript">
+	function handleLocalAuth() {
+		var urlencoded = oauth2Ely5Utils.urlencode({
+					"response_type": "code",
+					"client_id": "fooClientIdPassword",
+					"scope": "read",
+					"redirect_uri": "http://localhost:5051/vanilla/issue_token",
+                    // "state": oauth2Ely5Utils.cookieStorage.getItem("XSRF-TOKEN")
+				});
+      window.location.href=`http://localhost:5050/oauth/authorize/?${urlencoded}`;
+	}
+	handleLocalAuth();
+</script>
+</body>
+</html>
