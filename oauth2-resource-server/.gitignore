@@ -17,6 +17,8 @@ out
 # production
 /build
 
+resources/react
+
 # misc
 .DS_Store
 .env.local

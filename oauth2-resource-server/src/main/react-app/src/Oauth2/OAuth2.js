@@ -3,14 +3,17 @@ import React, {useEffect} from 'react';
 import {useRoutes} from "hookrouter";
 
 import oauth2Ely5Utils from '../utils';
+import endpointFactory from "../endpointFactory";
+
 
 
 const Authorization = () => {
+	console.log('NODE_ENV', process.env.NODE_ENV);
 	const urlencodedParams = oauth2Ely5Utils.urlencode({
 		"response_type": "code",
 		"client_id": "fooClientIdPassword",
 		"scope": "read",
-		"redirect_uri": "http://localhost:3000/oauth/token",
+		"redirect_uri": endpointFactory.tokenRedirect
 		// "state": oauth2Ely5Utils.cookieStorage.getItem("XSRF-TOKEN")
 	});
 
@@ -37,7 +40,7 @@ const handleLocalAuth = () => {
 			"client_id": "fooClientIdPassword",
 			"client_secret": "secret",
 			"code": oauth2Ely5Utils.getParameterByName("code"),
-			"redirect_uri": "http://localhost:3000/oauth/token"
+			"redirect_uri": endpointFactory.tokenRedirect
 		})
 	})
 	.then(res => ((res.status / 100) | 0) === 2 && res)
@@ -45,7 +48,7 @@ const handleLocalAuth = () => {
 	.then(function (data) {
 		console.log('Request succeeded with JSON response', data);
 		sessionStorage.setItem("jwtToken", JSON.stringify(data));
-		window.location.href = "http://localhost:3000/fakeuser"
+		window.location.href = endpointFactory.resource
 	})
 	.catch(function (error) {
 		console.log('Request failed', error);

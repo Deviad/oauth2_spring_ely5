@@ -12,7 +12,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "shx rm -rf ../resources/react || true && shx rm -rf ./build || true && cross-env PUBLIC_URL=/react/ react-scripts build && shx cp -rf ./build ../resources/react",
+    "build": "shx rm -rf ../resources/react || true && shx rm -rf ./build || true && cross-env PUBLIC_URL=/react/ NODE_ENV=production react-scripts build && shx cp -rf ./build ../resources/react",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
