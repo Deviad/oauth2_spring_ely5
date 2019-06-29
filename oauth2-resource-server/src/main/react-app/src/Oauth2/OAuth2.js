@@ -47,7 +47,10 @@ const handleLocalAuth = () => {
 	.then(res => res.json())
 	.then(function (data) {
 		console.log('Request succeeded with JSON response', data);
-		sessionStorage.setItem("jwtToken", JSON.stringify(data));
+		oauth2Ely5Utils.storage.setItem("user", JSON.stringify(data));
+
+
+
 		window.location.href = endpointFactory.resource
 	})
 	.catch(function (error) {

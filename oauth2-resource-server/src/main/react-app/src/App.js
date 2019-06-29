@@ -1,25 +1,39 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import './App.css';
-import {getWorkingPath, navigate, setBasepath, useControlledInterceptor, useRoutes} from "hookrouter";
+import {getWorkingPath, navigate, useRoutes} from "hookrouter";
 import OAuth2 from "./Oauth2";
-
+import UserContext, {UserProvider} from "./UserContext";
+import oauth2Ely5Utils from './utils'
 const routes = {
 	'/': () => <HomePage/>,
 	'/oauth*': () => <OAuth2/>,
-	'/fakeuser': () => <FakeUser />
+	'/user-profile': () => <UserProfile/>
 };
 
 
 const NotFoundPage = () => <div>Page not Found</div>;
 
 
-const FakeUser = () => <div>Fake User Component</div>
+const UserProfile = () => {
+
+	const user = useContext(UserContext);
+
+	console.log("User", user);
+
+	return (
+		<div>
+			User is <br />
+			{JSON.stringify(user)}
+		</div>
+	);
+
+};
 
 
 const HomePage = () => {
 
-	useEffect(()=> {
-		setTimeout(()=>{
+	useEffect(() => {
+		setTimeout(() => {
 			navigate('/oauth/authorization')
 		}, 1000)
 	}, []);
@@ -29,16 +43,34 @@ const HomePage = () => {
 };
 
 
+const ContextInjector = () => {
+	const match = useRoutes(routes);
 
+	const [user, setUser] = useState({});
+
+	useEffect(() => {
+				setUser(oauth2Ely5Utils.storage.getItem("user"))
+		}
+	);
+
+	return (
+		<UserProvider value={user}>
+
+			{match || <NotFoundPage/>}
+		</UserProvider>
+	)
+
+};
 
 const App = (props) => {
 
-	const match = useRoutes(routes);
+
 	return (
-		<div className="App" style={{marginTop:'100px'}}>
+		<div className="App" style={{marginTop: '100px'}}>
 			{console.log('getWorkingPath', getWorkingPath())}
 
-			{match || <NotFoundPage/>}
+			<ContextInjector/>
+
 		</div>
 	);
 };

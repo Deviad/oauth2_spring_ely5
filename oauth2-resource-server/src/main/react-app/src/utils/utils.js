@@ -85,8 +85,9 @@ const oauth2Ely5Utils = (function() {
 	return {
 		urlencode,
 		getParameterByName,
-		cookieStorage,
-		storageFactory
+		get storage() {
+			return storageFactory.getStorage();
+		}
 	}
 
 })();
