@@ -17,8 +17,6 @@ out
 # production
 /build
 
-resources/react
-
 # misc
 .DS_Store
 .env.local
@@ -29,3 +27,4 @@ resources/react
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+/src/main/resources/react/
