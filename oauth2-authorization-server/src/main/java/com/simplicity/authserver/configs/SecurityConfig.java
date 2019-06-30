@@ -38,13 +38,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //                .antMatchers("/login").permitAll()
         .antMatchers("/admin")
         .hasRole("ADMIN")
-        .antMatchers("/authorize.html", "/token.html", "/", "/login")
+        .antMatchers("/", "/login", "/logout")
         .permitAll()
         .and()
         .formLogin()
         .permitAll()
         .and()
         .logout()
+        .logoutSuccessUrl("/").permitAll()
         .deleteCookies("JSESSIONID", "XSRF-TOKEN")
 
         //                .and()
@@ -52,11 +53,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         .and()
         .csrf()
-        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-
-        .and()
-        .cors()
-        .disable();
+        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+//        .requireCsrfProtectionMatcher(csrfRequestMatcher);
   }
 
 
@@ -78,4 +76,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   public AuthenticationManager authenticationManagerBean() throws Exception {
     return super.authenticationManagerBean();
   }
+
+//  private RequestMatcher csrfRequestMatcher = new RequestMatcher() {
+//    private RegexRequestMatcher requestMatcher =
+//            new RegexRequestMatcher("/oauth/*", null);
+//
+//    public boolean matches(HttpServletRequest httpServletRequest) {
+//      if (requestMatcher.matches(httpServletRequest)) {
+//        return true;
+//      }
+//      return false;
+//    }
+//  };
 }

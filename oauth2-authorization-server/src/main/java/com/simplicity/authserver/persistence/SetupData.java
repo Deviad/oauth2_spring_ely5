@@ -66,9 +66,11 @@ public class SetupData implements InitializingBean {
         if (userRepository.findUserByUsername("pippo") == null) {
             Role adminRole = roleRepository.findAll().stream().filter(role -> role.getName().equals("ROLE_ADMIN")).findFirst().orElseThrow(EntityNotFoundException::new);
             Role userRole = roleRepository.findAll().stream().filter(role -> role.getName().equals("ROLE_USER")).findFirst().orElseThrow(EntityNotFoundException::new);
+//            Role oauth2UserRole = roleRepository.findAll().stream().filter(role -> role.getName().equals("OAuth2Authentication_ROLE_USER")).findFirst().orElseThrow(EntityNotFoundException::new);
             User user1 = new User();
             user1.setUsername("pippo");
             user1.setPassword(encoder.encode("123"));
+//            user1.setRoles(new LinkedHashSet<>(Arrays.asList(adminRole, userRole, oauth2UserRole)));
             user1.setRoles(new LinkedHashSet<>(Arrays.asList(adminRole, userRole)));
             userRepository.save(user1);
             UserInfo userInfo1 = new UserInfo();
@@ -116,6 +118,8 @@ public class SetupData implements InitializingBean {
         Set<Privilege> privileges = new LinkedHashSet<>(Arrays.asList(readPrivilege, writePrivilege));
         createRoleIfNotFound("ROLE_ADMIN", privileges);
         createRoleIfNotFound("ROLE_USER", Collections.singleton(readPrivilege));
+//        createRoleIfNotFound("OAuth2Authentication_ROLE_USER", privileges);
+
     }
 
     private Privilege createPrivilegeIfNotFound(String name) {

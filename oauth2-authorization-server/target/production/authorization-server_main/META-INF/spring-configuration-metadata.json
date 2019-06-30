@@ -10,30 +10,8 @@
       "type": "com.simplicity.authserver.configs.properties.Oauth2SecurityProperties$Oauth2",
       "sourceType": "com.simplicity.authserver.configs.properties.Oauth2SecurityProperties",
       "sourceMethod": "getOauth2()"
-    },
-    {
-      "name": "security.oauth2.client",
-      "type": "com.simplicity.authserver.configs.properties.Oauth2SecurityProperties$Oauth2$Client",
-      "sourceType": "com.simplicity.authserver.configs.properties.Oauth2SecurityProperties$Oauth2",
-      "sourceMethod": "getClient()"
     }
   ],
-  "properties": [
-    {
-      "name": "security.oauth2.client.access-token-uri",
-      "type": "java.lang.String",
-      "sourceType": "com.simplicity.authserver.configs.properties.Oauth2SecurityProperties$Oauth2$Client"
-    },
-    {
-      "name": "security.oauth2.client.client-id",
-      "type": "java.lang.String",
-      "sourceType": "com.simplicity.authserver.configs.properties.Oauth2SecurityProperties$Oauth2$Client"
-    },
-    {
-      "name": "security.oauth2.client.client-secret",
-      "type": "java.lang.String",
-      "sourceType": "com.simplicity.authserver.configs.properties.Oauth2SecurityProperties$Oauth2$Client"
-    }
-  ],
+  "properties": [],
   "hints": []
 }
