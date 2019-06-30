@@ -24,8 +24,11 @@ java {
     targetCompatibility = JavaVersion.VERSION_11
 }
 //gcr.io/distroless/java:11
-jib.to.image="localhost:5000/simplicity-springdemo"
+jib.to.image="localhost:5000/simplicity-resource-server"
 jib.from.image="gcr.io/distroless/java:11"
+jib.container.useCurrentTimestamp = true
+jib.container.labels = mapOf("com.davidepugliese" to "Davide Pugliese", "version" to "1.0.0")
+
 repositories {
     mavenCentral()
     jcenter()
