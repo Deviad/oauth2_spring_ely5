@@ -12,13 +12,13 @@ import java.util.TimeZone;
 @SpringBootApplication
 @EnableConfigurationProperties({SecurityProperties.class})
 @Slf4j
-public class SpringdemoApplication implements InitializingBean {
+public class SpringResourceServerApp implements InitializingBean {
 
-    void started() {
+    private void started() {
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
     }
     public static void main(String[] args) {
-        SpringApplication.run(SpringdemoApplication.class, args);
+        SpringApplication.run(SpringResourceServerApp.class, args);
     }
 
     @Override

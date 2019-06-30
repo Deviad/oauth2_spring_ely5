@@ -29,7 +29,7 @@ import static org.hamcrest.core.IsNot.not;
 @ActiveProfiles("test")
 @EnableWebSecurity
 @RunWith(SpringRunner.class)
-public class SpringdemoApplicationTests {
+public class SpringResourceServerAppTests {
 
 
     @LocalServerPort
