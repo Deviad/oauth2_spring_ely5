@@ -112,13 +112,13 @@ dependencies {
 
 application {
     // Define the main class for the application
-    mainClassName = "com.example.springdemo.SpringdemoApplication"
+    mainClassName = "com.simplicity.resourceserver.SpringResourceServerApp"
 }
 
 
 tasks {
     "bootRun"(BootRun::class) {
-        main = "com.example.springdemo.SpringdemoApplication"
+        main = "com.simplicity.resourceserver.SpringResourceServerApp"
 //        args("--spring.profiles.active=demo")
     }
 }

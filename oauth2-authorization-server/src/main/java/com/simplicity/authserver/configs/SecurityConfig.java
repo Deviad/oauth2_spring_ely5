@@ -36,17 +36,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(final HttpSecurity http) throws Exception {
     http.authorizeRequests()
         //                .antMatchers("/login").permitAll()
-        .antMatchers("/admin")
-        .hasRole("ADMIN")
+        .antMatchers("/admin").hasRole("ADMIN")
         .antMatchers("/", "/login", "/logout")
         .permitAll()
+
+        .and()
+        .antMatcher("/oauth/token").authorizeRequests().anyRequest().authenticated()
+
         .and()
         .formLogin()
         .permitAll()
         .and()
         .logout()
         .logoutSuccessUrl("/").permitAll()
-        .deleteCookies("JSESSIONID", "XSRF-TOKEN")
+        .clearAuthentication(true).invalidateHttpSession(true)
+        .deleteCookies("JSESSIONID")
 
         //                .and()
         //                .rememberMe().key("uniqueAndSecret").tokenValiditySeconds(31536000)

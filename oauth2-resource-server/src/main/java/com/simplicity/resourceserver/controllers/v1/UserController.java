@@ -48,8 +48,8 @@ public class UserController {
         return userService.getAllUsers(offset, limit);
     }
 
-    @GetMapping(value = "/me", produces = "application/json")
-    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping(value = "/userinfo", produces = "application/json")
+    @PreAuthorize("hasRole('USER')")
     public Map<String, Object> user(OAuth2Authentication user) {
         Map<String, Object> userInfo = new HashMap<>();
         userInfo.put(
