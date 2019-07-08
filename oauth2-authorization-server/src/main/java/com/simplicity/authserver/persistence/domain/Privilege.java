@@ -25,6 +25,7 @@ public class Privilege {
 
     @ManyToMany(mappedBy = "privileges", cascade = {CascadeType.MERGE})
     @LazyCollection(LazyCollectionOption.FALSE)
+    @Builder.Default
     private Collection<Role> roles = new HashSet<>();
 }
 

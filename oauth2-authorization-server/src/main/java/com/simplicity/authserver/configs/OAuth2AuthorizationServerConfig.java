@@ -56,7 +56,7 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
     @Override
     public void configure(final ClientDetailsServiceConfigurer clients) throws Exception {
         // A few examples with implementations of different grant types
-        log.info("Client id, Client secret: {}, {}", new String[]{oauth2Props.getOauth2().getClient().getClientId(), oauth2Props.getOauth2().getClient().getClientSecret()});
+        log.info("Client id, Client secret: {}, {}", oauth2Props.getOauth2().getClient().getClientId(), oauth2Props.getOauth2().getClient().getClientSecret());
 
 
         String[] authorizedUrls = {
@@ -112,7 +112,7 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
 
     public JwtAccessTokenConverter accessTokenConverter() {
         // specifically the following line:
-        JwtAccessTokenConverter converter = new CustomJwtAccessTokenConverter();
+        JwtAccessTokenConverter converter = new CustomJwtAccessTokenConverter(oauth2Props);
         KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(new ClassPathResource("jwt.jks"), "password".toCharArray());
         converter.setKeyPair(keyStoreKeyFactory.getKeyPair("jwt"));
         return converter;

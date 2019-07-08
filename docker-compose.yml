@@ -1,16 +1,15 @@
 version: "3.3"
 
 services:
-  nginx:
-    depends_on:
-      - springboot
-    image: localhost:5000/deviad-nginx
-    restart: always
-    ports:
-        - "8081:80"
-    restart: always
-    networks:
-      - simplicity_backend
+#  nginx:
+#    depends_on:
+#      - springboot
+#    image: localhost:5000/deviad-nginx
+#    restart: always
+#    ports:
+#        - "8081:80"
+#    networks:
+#      - simplicity_backend
   springboot:
     depends_on:
       - db-service
@@ -21,7 +20,7 @@ services:
       - DB_NAME=springdemo
       - DB_USERNAME=springuser
       - DB_PASSWORD=springpassword
-      - ACTIVE_PROFILE=development 
+      - ACTIVE_PROFILE=development
       - CLIENT_ID=fooClientIdPassword
       - DB_HOSTNAME=db-service
       - CLIENT_SECRET=secret
@@ -32,12 +31,12 @@ services:
     ports:
       - "5050:5050"
     networks:
-      - simplicity_backend 
-  db-service: 
-    image: wodby/mariadb  
-    volumes: 
+      - simplicity_backend
+  db-service:
+    image: wodby/mariadb
+    volumes:
       - db-data:/var/lib/mysql
-    environment: 
+    environment:
       - MYSQL_USER=springuser
       - MYSQL_PASSWORD=springpassword
       - MYSQL_DATABASE=springdemo
@@ -45,7 +44,7 @@ services:
     ports:
       - "3336:3306"
     networks:
-      - simplicity_backend    
+      - simplicity_backend
 
 volumes:
   db-data:

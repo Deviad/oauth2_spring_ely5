@@ -1,6 +1,9 @@
 package com.simplicity.resourceserver.security;
 
+import com.simplicity.resourceserver.configs.CustomOauth2Request;
 import com.simplicity.resourceserver.configs.CustomTokenConverter;
+import com.simplicity.resourceserver.persistence.services.UserService;
+import lombok.SneakyThrows;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionOperations;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
@@ -8,11 +11,14 @@ import org.springframework.security.authentication.AuthenticationTrustResolver;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.util.*;
 
 public class CustomSecurityExpressionRoot implements MethodSecurityExpressionOperations {
     protected final Authentication authentication;
@@ -30,10 +36,11 @@ public class CustomSecurityExpressionRoot implements MethodSecurityExpressionOpe
     public final String delete = "delete";
     public final String admin = "administration";
 
-    //
-
     private Object filterObject;
     private Object returnObject;
+
+    private UserService userService;
+
 
     public CustomSecurityExpressionRoot(Authentication authentication) {
         if (authentication == null) {
@@ -63,6 +70,18 @@ public class CustomSecurityExpressionRoot implements MethodSecurityExpressionOpe
         return hasAnyRoleName(defaultRolePrefix, roles);
     }
 
+    public boolean isOwner(String userName) {
+       return userName.equals(this.authentication.getPrincipal());
+    }
+
+    public boolean isStateVerified(OAuth2Authentication auth) {
+        final String state = this.getState(authentication);
+        final String stateFromCustomAuth = ((CustomOauth2Request) auth.getOAuth2Request()).getState();
+
+        return state.equals(stateFromCustomAuth);
+    }
+
+
     private boolean hasAnyAuthorityName(String prefix, String... roles) {
         final Set<String> roleSet = getAuthoritySet();
 
@@ -88,6 +107,21 @@ public class CustomSecurityExpressionRoot implements MethodSecurityExpressionOpe
         }
 
         return false;
+    }
+
+
+    @SneakyThrows
+    private String getState(Authentication authentication) {
+        byte[] hmacData;
+        final long unixTime = Instant.now().getEpochSecond();
+        long adhocTime = unixTime / 60;
+
+        String rawState = adhocTime + (String) authentication.getPrincipal();
+        SecretKeySpec secretKey = new SecretKeySpec(rawState.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
+        Mac mac = Mac.getInstance("HmacSHA256");
+        mac.init(secretKey);
+        hmacData = mac.doFinal(rawState.getBytes(StandardCharsets.UTF_8));
+        return Base64.getEncoder().encodeToString(hmacData);
     }
 
 
@@ -126,8 +160,8 @@ public class CustomSecurityExpressionRoot implements MethodSecurityExpressionOpe
         return !trustResolver.isAnonymous(authentication) && !trustResolver.isRememberMe(authentication);
     }
 
-    public Object getPrincipal() {
-        return authentication.getPrincipal();
+    public CustomUserPrincipal getPrincipal() {
+        return (CustomUserPrincipal)authentication.getPrincipal();
     }
 
     public void setTrustResolver(AuthenticationTrustResolver trustResolver) {
@@ -153,7 +187,7 @@ public class CustomSecurityExpressionRoot implements MethodSecurityExpressionOpe
 
     private Set<String> getAuthoritySet() {
         if (roles == null) {
-            roles = new HashSet<String>();
+            roles = new HashSet<>();
             Collection<? extends GrantedAuthority> userAuthorities = authentication.getAuthorities();
 
             if (roleHierarchy != null) {

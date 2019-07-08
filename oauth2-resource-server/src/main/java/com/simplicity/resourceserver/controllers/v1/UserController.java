@@ -3,6 +3,8 @@ package com.simplicity.resourceserver.controllers.v1;
 import com.simplicity.resourceserver.api.v1.model.UserWithInfoDTO;
 import com.simplicity.resourceserver.configs.CustomOauth2Request;
 import com.simplicity.resourceserver.persistence.services.UserService;
+import com.simplicity.resourceserver.security.SecurityService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -20,6 +22,9 @@ public class UserController {
     public static final String BASE_URL = "/api/v1/users";
     private final UserService userService;
 
+    @Autowired
+    private SecurityService securityService;
+
     public UserController(UserService userService) {
         this.userService = userService;
     }
@@ -30,15 +35,11 @@ public class UserController {
         return userService.createNewUser(userWithInfoDTO);
     }
 
-    @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public UserWithInfoDTO getUserById(@PathVariable Long id) {
-        return userService.getUserById(id);
-    }
+    @GetMapping("/{username}")
+    @PreAuthorize("isOwner(#username) AND isStateVerified(#auth)")
 
-    @GetMapping("/username/{username}")
     @ResponseStatus(HttpStatus.OK)
-    public UserWithInfoDTO getUserById(@PathVariable String username) {
+    public UserWithInfoDTO getUserById(OAuth2Authentication auth, @PathVariable String username) {
         return userService.getUserByUsername(username);
     }
 

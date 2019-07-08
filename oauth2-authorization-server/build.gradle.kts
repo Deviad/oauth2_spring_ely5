@@ -22,15 +22,38 @@ val junitVintageVersion = "5.4.2"
 java {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
-//    sourceSets {
-//        main {
-//            resources { exclude("**/*.jks") }
-//        }
-//    }
+    sourceSets {
+        get("main").apply {
+            java.srcDir("src/main/java")
+            resources.srcDir("resources")
+            buildDir = file("target")
+            output.dir(file("$buildDir/$name"))
+            java.outputDir = file("$buildDir/$name")
+        }
+        get("test").apply {
+            java.srcDir("test/java")
+            resources.srcDir("test-resources")
+            buildDir = file("target")
+            output.dir(file("$buildDir/$name"))
+            java.outputDir = file("$buildDir/$name")
+        }
+    }
 }
+
+idea {
+    module {
+        // use the same output folders as gradle, so the pythonDevelop task works correctly
+        buildDir = file("target")
+        outputDir = sourceSets["main"].output.classesDirs.singleFile
+        testOutputDir = sourceSets["test"].output.classesDirs.singleFile
+        inheritOutputDirs = false
+    }
+}
+
 //gcr.io/distroless/java:11
 jib.to.image = "localhost:5000/simplicity-springdemo"
 jib.from.image = "gcr.io/distroless/java:11"
+jib.setAllowInsecureRegistries(true)
 repositories {
     mavenCentral()
     jcenter()
@@ -98,6 +121,7 @@ dependencies {
     api("javax.activation:activation:1.1")
     api("org.glassfish.jaxb:jaxb-runtime:2.3.0")
     api("javax.annotation:javax.annotation-api:1.3.2")
+    implementation("commons-codec:commons-codec:1.12")
     runtime("mysql:mysql-connector-java")
     runtime("org.mariadb.jdbc:mariadb-java-client:2.4.1")
     testRuntime("com.h2database:h2:1.4.199")

@@ -12,4 +12,4 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
-rootProject.name = "authorization-server"
+rootProject.name = "oauth2-authorization-server"

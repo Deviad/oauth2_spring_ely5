@@ -15,4 +15,7 @@ public class CustomOauth2Request extends OAuth2Request {
         super(other);
     }
     private List<String> roles;
+    private String state;
+
+
 }

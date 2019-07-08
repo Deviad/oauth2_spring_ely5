@@ -17,6 +17,7 @@ public class CustomTokenConverter extends DefaultAccessTokenConverter {
         OAuth2Authentication authentication = super.extractAuthentication(map);
         CustomOauth2Request customOauth2Request = new CustomOauth2Request(authentication.getOAuth2Request());
         customOauth2Request.setRoles(new ArrayList<>((List<String>)map.get("roles")));
+        customOauth2Request.setState((String)map.get("state"));
         return new OAuth2Authentication(customOauth2Request, authentication.getUserAuthentication());
     }
 
