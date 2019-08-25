@@ -1,20 +1,21 @@
 package com.simplicity.resourceserver.configs;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.oauth2.provider.OAuth2Request;
 
 import java.util.List;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class CustomOauth2Request extends OAuth2Request {
     public CustomOauth2Request(OAuth2Request other) {
         super(other);
     }
+    @Getter
+    @Setter
     private List<String> roles;
+    @Getter
+    @Setter
     private String state;
 
 

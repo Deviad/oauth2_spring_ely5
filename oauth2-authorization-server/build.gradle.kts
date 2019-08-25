@@ -140,7 +140,7 @@ dependencies {
 
 application {
     // Define the main class for the application
-    mainClassName = "com.example.springdemo.SpringdemoApplication"
+    mainClassName = "com.simplicity.authserver.SpringdemoApplication"
 }
 
 tasks {

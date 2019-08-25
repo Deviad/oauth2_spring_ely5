@@ -6,7 +6,7 @@
  * User Manual available at https://docs.gradle.org/5.4.1/userguide/tutorial_java_projects.html
  */
 
-
+import com.moowork.gradle.node.yarn.YarnTask
 import org.springframework.boot.gradle.tasks.run.BootRun
 
 val mapstructVersion = "1.3.0.Final"
@@ -17,15 +17,41 @@ val log4j2Version = "2.8.2"
 val junitPlatformVersion = "1.4.2"
 val mockitoJunitJupiterVersion = "2.23.0"
 val junitJupiterVersion = "5.4.2"
-val junitVintageVersion ="5.4.2"
-
+val junitVintageVersion = "5.4.2"
 java {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
+    sourceSets {
+        get("main").apply {
+            java.srcDir("src/main/java")
+            resources.srcDir("resources")
+            buildDir = file("target")
+            output.dir(file("$buildDir/$name"))
+            java.outputDir = file("$buildDir/$name")
+        }
+        get("test").apply {
+            java.srcDir("test/java")
+            resources.srcDir("test-resources")
+            buildDir = file("target")
+            output.dir(file("$buildDir/$name"))
+            java.outputDir = file("$buildDir/$name")
+        }
+    }
 }
-//gcr.io/distroless/java:11
-jib.to.image="localhost:5000/simplicity-resource-server"
-jib.from.image="gcr.io/distroless/java:11"
+
+idea {
+    module {
+        // use the same output folders as gradle, so the pythonDevelop task works correctly
+        buildDir = file("target")
+        outputDir = sourceSets["main"].output.classesDirs.singleFile
+        testOutputDir = sourceSets["test"].output.classesDirs.singleFile
+        inheritOutputDirs = false
+    }
+}
+
+// gcr.io/distroless/java:11
+jib.to.image = "localhost:5000/simplicity-resource-server"
+jib.from.image = "gcr.io/distroless/java:11"
 jib.container.useCurrentTimestamp = true
 jib.container.labels = mapOf("com.davidepugliese" to "Davide Pugliese", "version" to "1.0.0")
 
@@ -47,12 +73,27 @@ plugins {
     application
     id("idea")
     id("eclipse")
+    id("base")
+    id("com.moowork.node") version "1.3.1"
     id("com.gradle.build-scan") version "2.0.2"
     id("org.springframework.boot") version "2.1.4.RELEASE"
     id("io.spring.dependency-management") version "1.0.7.RELEASE"
     id("net.ltgt.apt") version "0.21"
     id("com.google.cloud.tools.jib") version "1.1.2"
     id("io.freefair.lombok") version "3.2.1"
+}
+
+node {
+    version = "10.15.0"
+    yarnVersion = "0.16.1"
+    download = true
+    buildDir = file("target")
+    distBaseUrl = "https://nodejs.org/dist"
+//    yarnWorkDir = file("${project.buildDir}/yarn")
+    workDir = file("$buildDir/react-app/nodejs")
+    yarnWorkDir = file("$buildDir/react-app/yarn")
+//    nodeModulesDir = file("${project.buildDir}/resources/main/react-app")
+    nodeModulesDir = file("$buildDir/react-app-src")
 }
 
 buildscript {
@@ -75,7 +116,7 @@ dependencies {
     api("org.springframework.boot:spring-boot-starter-validation:$springBootVersion")
     api("org.springframework.boot:spring-boot-starter-web:$springBootVersion")
     api("org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:$springBootVersion")
-    //This dep treats nested classes as if they were nested properties
+    // This dep treats nested classes as if they were nested properties
     api("org.springframework.boot:spring-boot-configuration-processor:$springBootVersion")
 //    compile('org.springframework.boot:spring-boot-starter-oauth2-oidc-client:2.1.0.BUILD-SNAPSHOT')
     implementation("io.springfox:springfox-swagger2:2.9.2")
@@ -115,11 +156,46 @@ application {
     mainClassName = "com.simplicity.resourceserver.SpringResourceServerApp"
 }
 
-
 tasks {
+
+    val bundle by registering(YarnTask::class)
+    val copyReactAppToTarget by registering(Copy::class)
+    val copyReactAppToTargetResources by registering(Copy::class)
+
+    bootJar {
+        dependsOn(copyReactAppToTargetResources)
+    }
+
+    copyReactAppToTargetResources {
+        dependsOn(bundle)
+    }
+
+    bundle {
+        dependsOn(yarn)
+    }
+
+    yarn {
+        dependsOn(copyReactAppToTarget)
+    }
+
+    "copyReactAppToTarget"(Copy::class) {
+        from("src/main/react-app")
+        into("target/react-app-src")
+    }
+
+    "copyReactAppToTargetResources"(Copy::class) {
+        from("target/react-app-src/build")
+        into("target/resources/main/react")
+    }
+
     "bootRun"(BootRun::class) {
+        dependsOn(copyReactAppToTargetResources)
         main = "com.simplicity.resourceserver.SpringResourceServerApp"
 //        args("--spring.profiles.active=demo")
+    }
+    "bundle"(YarnTask::class) {
+        setWorkingDir(file("target/react-app-src"))
+        args = listOf("build")
     }
 }
 
