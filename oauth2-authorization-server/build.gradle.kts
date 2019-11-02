@@ -7,8 +7,8 @@
  */
 
 
+import org.springframework.boot.gradle.tasks.bundling.BootJar
 import org.springframework.boot.gradle.tasks.run.BootRun
-
 val mapstructVersion = "1.3.0.Final"
 val lombokVersion = "1.18.4"
 val springBootVersion = "2.1.6.RELEASE"
@@ -56,12 +56,15 @@ jib.from.image = "gcr.io/distroless/java:11"
 jib.setAllowInsecureRegistries(true)
 repositories {
     mavenCentral()
+    mavenLocal()
     jcenter()
     gradlePluginPortal()
+    maven(url = "https://jcenter.bintray.com")
+    maven(url = "https://oss.sonatype.org/content/repositories/snapshots")
+    maven(url = "http://oss.jfrog.org/artifactory/oss-snapshot-local")
+    maven(url = "http://repo.maven.apache.org/maven2")
     maven(url = "https://repo.spring.io/snapshot")
     maven(url = "https://repo.spring.io/milestone")
-//    maven(url = "https://jitpack.io")
-//    maven(url = "https://oss.jfrog.org/artifactory/oss-release-local/")
 }
 
 plugins {
@@ -72,6 +75,7 @@ plugins {
     application
     id("idea")
     id("eclipse")
+    id("maven-publish")
     id("com.gradle.build-scan") version "2.0.2"
     id("org.springframework.boot") version "2.1.4.RELEASE"
     id("io.spring.dependency-management") version "1.0.7.RELEASE"
@@ -81,7 +85,7 @@ plugins {
 }
 
 buildscript {
-    val springBootVersion = "2.1.4.RELEASE"
+    val springBootVersion = "2.1.6.RELEASE"
     val hibernateVersion = "5.4.2.Final"
     dependencies {
         classpath("gradle.plugin.com.boxfuse.client:gradle-plugin-publishing:5.0.3")
@@ -144,11 +148,26 @@ application {
 }
 
 tasks {
-
     "bootRun"(BootRun::class) {
         main = "com.simplicity.authserver.SpringdemoApplication"
-
     }
-//        args("--spring.profiles.active=demo")
+    "jar"(Jar::class) {
+        enabled = false
+    }
+    "bootJar"(BootJar::class) {
+        baseName = "oauth2-authorization-server"
+        version = "0.0.1-SNAPSHOT"
+        classifier = "boot"
+        mainClassName = "com.simplicity.authserver.SpringdemoApplication"
+    }
 }
 
+springBoot {
+    buildInfo {
+        properties {
+            group = "com.simplicity"
+            name = rootProject.name
+            version = "0.0.1-SNAPSHOT"
+        }
+    }
+}
