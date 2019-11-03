@@ -155,7 +155,7 @@ tasks {
         enabled = false
     }
     "bootJar"(BootJar::class) {
-        baseName = "oauth2-authorization-server"
+        baseName = rootProject.name
         version = "0.0.1-SNAPSHOT"
         classifier = "boot"
         mainClassName = "com.simplicity.authserver.SpringdemoApplication"

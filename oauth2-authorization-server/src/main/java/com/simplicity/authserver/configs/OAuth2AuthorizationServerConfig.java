@@ -2,11 +2,12 @@ package com.simplicity.authserver.configs;
 
 import com.simplicity.authserver.configs.properties.Oauth2SecurityProperties;
 import com.simplicity.authserver.security.CustomUserDetailsService;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.*;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -20,6 +21,8 @@ import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenCo
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 
 @Slf4j
@@ -109,11 +112,13 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
     }
 
     @Bean
-
+    @SneakyThrows
     public JwtAccessTokenConverter accessTokenConverter() {
         // specifically the following line:
+        Path resourceDirectory = Paths.get("src", "main","resources");
+        String absolutePath = resourceDirectory.toFile().getAbsolutePath();
         JwtAccessTokenConverter converter = new CustomJwtAccessTokenConverter(oauth2Props);
-        KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(new ClassPathResource("jwt.jks"), "password".toCharArray());
+        KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(new FileSystemResource(absolutePath + "/jwt.jks"), "password".toCharArray());
         converter.setKeyPair(keyStoreKeyFactory.getKeyPair("jwt"));
         return converter;
     }

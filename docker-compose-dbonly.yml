@@ -1,0 +1,22 @@
+version: "3.3"
+
+services:
+  db-service:
+    image: wodby/mariadb
+    volumes:
+      - db-data:/var/lib/mysql
+    environment:
+      - MYSQL_USER=springuser
+      - MYSQL_PASSWORD=springpassword
+      - MYSQL_DATABASE=springdemo
+      - MYSQL_ROOT_PASSWORD=springdemo
+    ports:
+      - "3336:3306"
+    networks:
+      - simplicity_backend
+
+volumes:
+  db-data:
+
+networks:
+  simplicity_backend:
