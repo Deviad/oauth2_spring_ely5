@@ -1,0 +1,27 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="SpringdemoApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="oauth2-resource-server_main" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.simplicity.resourceserver.SpringResourceServerApp" />
+    <option name="WORKING_DIRECTORY" value="file://$MODULE_WORKING_DIR$" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+    <option name="ALTERNATIVE_JRE_PATH" value="11" />
+    <option name="UPDATE_ACTION_UPDATE_POLICY" value="UpdateClassesAndTriggerFile" />
+    <envs>
+      <env name="DB_NAME" value="springdemo" />
+      <env name="DB_USERNAME" value="springuser" />
+      <env name="DB_PASSWORD" value="springpassword" />
+      <env name="SERVER_PORT" value="5051" />
+      <env name="ACTIVE_PROFILE" value="development" />
+      <env name="CLIENT_ID" value="fooClientIdPassword" />
+      <env name="DB_HOSTNAME" value="localhost" />
+      <env name="CLIENT_SECRET" value="secret" />
+      <env name="APP_HOSTNAME" value="localhost" />
+      <env name="DDL_AUTO" value="create-drop" />
+      <env name="JWT_SIGNING_KEY" value="supersecretkey" />
+      <env name="DB_DBMS" value="mysql" />
+    </envs>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

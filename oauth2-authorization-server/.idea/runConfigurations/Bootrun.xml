@@ -1,0 +1,37 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Bootrun" type="GradleRunConfiguration" factoryName="Gradle">
+    <ExternalSystemSettings>
+      <option name="env">
+        <map>
+          <entry key="ACTIVE_PROFILE" value="development" />
+          <entry key="APP_HOSTNAME" value="localhost" />
+          <entry key="CLIENT_ID" value="fooClientIdPassword" />
+          <entry key="CLIENT_SECRET" value="secret" />
+          <entry key="DB_DBMS" value="mysql" />
+          <entry key="DB_HOSTNAME" value="localhost" />
+          <entry key="DB_NAME" value="springdemo" />
+          <entry key="DB_PASSWORD" value="springpassword" />
+          <entry key="DB_USERNAME" value="springuser" />
+          <entry key="DDL_AUTO" value="update" />
+          <entry key="JWT_SIGNING_KEY" value="supersecretkey" />
+          <entry key="SERVER_PORT" value="5050" />
+        </map>
+      </option>
+      <option name="executionName" />
+      <option name="externalProjectPath" value="$PROJECT_DIR$" />
+      <option name="externalSystemIdString" value="GRADLE" />
+      <option name="scriptParameters" value="--info" />
+      <option name="taskDescriptions">
+        <list />
+      </option>
+      <option name="taskNames">
+        <list>
+          <option value="bootRun" />
+        </list>
+      </option>
+      <option name="vmOptions" value="" />
+    </ExternalSystemSettings>
+    <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+    <method v="2" />
+  </configuration>
+</component>
