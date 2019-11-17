@@ -12,7 +12,6 @@ import org.springframework.security.config.annotation.method.configuration.Globa
 public class MethodSecurityConfig extends GlobalMethodSecurityConfiguration {
     @Override
     protected MethodSecurityExpressionHandler createExpressionHandler() {
-        // final DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
         final CustomMethodSecurityExpressionHandler expressionHandler = new CustomMethodSecurityExpressionHandler();
         expressionHandler.setPermissionEvaluator(new CustomPermissionEvaluator());
         return expressionHandler;

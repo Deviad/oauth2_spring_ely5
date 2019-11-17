@@ -105,7 +105,6 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
     public DefaultTokenServices tokenServices(final TokenStore tokenStore) {
         final DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
         defaultTokenServices.setTokenStore(tokenStore);
-//        defaultTokenServices.setTokenEnhancer(tokenEnhancer());
         defaultTokenServices.setSupportRefreshToken(true);
         return defaultTokenServices;
     }
@@ -120,11 +119,6 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         environment = applicationContext.getEnvironment();
     }
-//
-//    @Bean
-//    public TokenEnhancer tokenEnhancer() {
-//        return new CustomTokenEnhancer();
-//    }
 
     @Bean
     public PasswordEncoder encoder() {
